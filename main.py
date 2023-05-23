@@ -1,18 +1,18 @@
-import os
 
-# Define the base folder name
-base_folder = "2023.05."
+import pyautogui as pt
+import time
+limit = int(input("Say: "))
+message = input("message: ")
+time.sleep(5)
 
-# Define the number of folders to create
-num_folders = 30
+i = 0
 
-# Loop through the number of folders to create
-for i in range(num_folders):
-    # Create the folder name by appending the folder number to the base folder name
-    folder_name = f'{base_folder}{i+1}'
-    # Create the folder if it does not already exist
-    if not os.path.exists(folder_name):
-        os.makedirs(folder_name)
-        print(f'Folder {folder_name} created successfully.')
-    else:
-        print(f'Folder {folder_name} already exists.')
+while i < limit:
+    pt.write(message)
+    pt.press("enter")
+    i = i + 1
+    print(i)
+
+    time.sleep(0.1)
+    
+    
