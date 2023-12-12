@@ -1,0 +1,67 @@
+Table Studios {
+  StudioID int [pk]
+  StudioName varchar(50) [not null]
+  Location varchar(100)
+  FoundingDate date
+  ContactEmail varchar(100)
+}
+
+Table Developers {
+  DeveloperID int [pk]
+  DeveloperName varchar(50) [not null]
+  StudioID int
+  Specialization varchar(50)
+  HireDate date
+  ContactPhone varchar(15)
+}
+
+Table Games {
+  GameID int [pk]
+  GameTitle varchar(50) [not null]
+  DeveloperID int
+  ReleaseDate date
+  Genre varchar(50)
+  Platform varchar(50)
+}
+
+Table Players {
+  PlayerID int [pk]
+  PlayerName varchar(50) [not null]
+  DateOfBirth date
+  Email varchar(100)
+  Country varchar(50)
+}
+
+Table Players_Games {
+  PlayerID int
+  GameID int
+  Primary Key (PlayerID, GameID)
+}
+
+Table Achievements {
+  AchievementID int [pk]
+  AchievementName varchar(50) [not null]
+  GameID int
+  AchievementType varchar(50)
+  Difficulty varchar(20)
+}
+
+Table Player_Score {
+  PlayerID int [pk]
+  Score int [not null]
+  AchievementID int
+  Timestamp timestamp
+}
+
+Ref: "Developers"."StudioID" > "Studios"."StudioID"
+Ref: "Games"."DeveloperID" > "Developers"."DeveloperID"
+Ref: "Players_Games"."PlayerID" > "Players"."PlayerID"
+Ref: "Players_Games"."GameID" > "Games"."GameID"
+Ref: "Achievements"."GameID" > "Games"."GameID"
+Ref: "Player_Score"."PlayerID" > "Players"."PlayerID"
+Ref: "Player_Score"."AchievementID" > "Achievements"."AchievementID"
+
+
+
+
+

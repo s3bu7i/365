@@ -1,0 +1,102 @@
+CREATE TABLE Studios (
+  StudioID NUMBER PRIMARY KEY,
+  StudioName VARCHAR2(50) NOT NULL,
+  Location VARCHAR2(100),
+  FoundingDate DATE,
+  ContactEmail VARCHAR2(100)
+);
+
+CREATE TABLE Developers (
+  DeveloperID NUMBER PRIMARY KEY,
+  DeveloperName VARCHAR2(50) NOT NULL,
+  StudioID NUMBER,
+  Specialization VARCHAR2(50),
+  HireDate DATE,
+  ContactPhone VARCHAR2(15),
+  CONSTRAINT fk_developer_studio FOREIGN KEY (StudioID) REFERENCES Studios(StudioID)
+);
+
+CREATE TABLE Games (
+  GameID NUMBER PRIMARY KEY,
+  GameTitle VARCHAR2(50) NOT NULL,
+  DeveloperID NUMBER,
+  ReleaseDate DATE,
+  Genre VARCHAR2(50),
+  Platform VARCHAR2(50),
+  CONSTRAINT fk_game_developer FOREIGN KEY (DeveloperID) REFERENCES Developers(DeveloperID)
+);
+
+CREATE TABLE Players (
+  PlayerID NUMBER PRIMARY KEY,
+  PlayerName VARCHAR2(50) NOT NULL,
+  DateOfBirth DATE,
+  Email VARCHAR2(100),
+  Country VARCHAR2(50)
+);
+
+CREATE TABLE Players_Games (
+  PlayerID NUMBER,
+  GameID NUMBER,
+  PRIMARY KEY (PlayerID, GameID),
+  CONSTRAINT fk_players_games_player FOREIGN KEY (PlayerID) REFERENCES Players(PlayerID),
+  CONSTRAINT fk_players_games_game FOREIGN KEY (GameID) REFERENCES Games(GameID)
+);
+
+CREATE TABLE Achievements (
+  AchievementID NUMBER PRIMARY KEY,
+  AchievementName VARCHAR2(50) NOT NULL,
+  GameID NUMBER,
+  AchievementType VARCHAR2(50),
+  Difficulty VARCHAR2(20),
+  CONSTRAINT fk_achievements_game FOREIGN KEY (GameID) REFERENCES Games(GameID)
+);
+
+CREATE TABLE Player_Score (
+  PlayerID NUMBER PRIMARY KEY,
+  Score NUMBER NOT NULL,
+  AchievementID NUMBER,
+  Timestamp TIMESTAMP,
+  CONSTRAINT fk_player_score_player FOREIGN KEY (PlayerID) REFERENCES Players(PlayerID),
+  CONSTRAINT fk_player_score_achievement FOREIGN KEY (AchievementID) REFERENCES Achievements(AchievementID)
+);
+
+
+
+INSERT INTO Studios (StudioID, StudioName, Location, FoundingDate, ContactEmail)
+VALUES (1, 'BPC Studio', 'Baku', TO_DATE('2022-11-11', 'YYYY-MM-DD'), 'ali@gmail.com');
+
+INSERT INTO Developers (DeveloperID, DeveloperName, StudioID, Specialization, HireDate, ContactPhone)
+VALUES (1, 'Sabuhi Gasimzada', 1, 'Game Developer', TO_DATE('2022-01-15', 'YYYY-MM-DD'), '+99-50-881-6613');
+
+
+INSERT INTO Games (GameID, GameTitle, DeveloperID, ReleaseDate, Genre, Platform)
+VALUES (1, 'Perdia Game', 1, TO_DATE('2023-05-20', 'YYYY-MM-DD'), 'Action', 'PC');
+
+
+INSERT INTO Players (PlayerID, PlayerName, DateOfBirth, Email, Country)
+VALUES (1, 'Dino', TO_DATE('2022-03-15', 'YYYY-MM-DD'), 'sabuhi.gasimzada@gmail.com', 'USA');
+
+
+INSERT INTO Players_Games (PlayerID, GameID)
+VALUES (1, 1);
+
+
+INSERT INTO Achievements (AchievementID, AchievementName, GameID, AchievementType, Difficulty)
+VALUES (1, 'First Level Completed', 1, 'Completion', 'Easy');
+
+
+INSERT INTO Player_Score (PlayerID, Score, AchievementID, Timestamp)
+VALUES (1, 22500, 1, TIMESTAMP '2023-06-01 16:34:56');
+
+
+
+SELECT * FROM Studios;
+SELECT * FROM Developers;
+SELECT * FROM Games;
+SELECT * FROM Players;
+SELECT * FROM Players_Games;
+SELECT * FROM Achievements;
+SELECT * FROM Player_Score;
+
+
+
