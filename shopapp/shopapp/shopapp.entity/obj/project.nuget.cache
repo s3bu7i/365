@@ -1,0 +1,11 @@
+{
+  "version": 2,
+  "dgSpecHash": "8FWkCmrVHqj+cne0JkKRdn6Y3KvaqVPNdf/+hQ1/nqImje+M89DfUnk5A+0puvmG4PXuCpBoK/i7yJg6waeyMA==",
+  "success": true,
+  "projectFilePath": "C:\\Users\\sadikturan\\source\\github\\shopapp\\shopapp.entity\\shopapp.entity.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\sadikturan\\.nuget\\packages\\microsoft.netcore.platforms\\1.1.0\\microsoft.netcore.platforms.1.1.0.nupkg.sha512",
+    "C:\\Users\\sadikturan\\.nuget\\packages\\netstandard.library\\2.0.3\\netstandard.library.2.0.3.nupkg.sha512"
+  ],
+  "logs": []
+}
