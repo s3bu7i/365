@@ -1,0 +1,21 @@
+Change MAC adress
+1. ifconfig eth0/wlan0 down
+2. ifconfig eth0/wlan0 hw ether (random mac adress)
+3. ifconfig eth0/wlan0 up
+now u mac adress is change :D
+
+netstat -na | find "port number"
+
+
+sudo apt install sublist3r
+sublist3r.py -d google.com
+sublist3r.py -d github.com -t 3 -e google
+
+sudo apt install osrframework
+usufy -n wordwebsite
+
+https://web.archive.org/
+
+
+sudo apt install theharvester
+theHarvester -d kali.org -l 500 -b duckduckgo
