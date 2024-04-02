@@ -1,10 +1,10 @@
 import os
 
 # Define the base folder name
-base_folder = "2024.03."
+base_folder = "2024.04."
 
 # Define the number of folders to create
-num_folders = 31
+num_folders = 30
 
 # Loop through the number of folders to create
 for i in range(num_folders):
