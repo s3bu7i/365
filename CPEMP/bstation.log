@@ -1,0 +1,5 @@
+2024-05-19 12:00:00 INFO [S1AP] Initial Context Setup Request: UE ID 1234, eNB ID 5678
+2024-05-19 12:00:10 WARN [RRC] RRC Connection Reestablishment Request: UE ID 1234
+2024-05-19 12:00:20 INFO [S1AP] Handover Request: Source eNB ID 5678, Target eNB ID 91011
+2024-05-19 12:01:00 INFO [MME] Attach Request: IMSI 310150123456789
+2024-05-19 12:01:30 ERROR [RRC] RRC Connection Setup Failure: UE ID 1234, Cause: Radio Link Failure

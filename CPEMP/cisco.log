@@ -1,0 +1,5 @@
+May 19 12:00:00.123 UTC: %SYS-5-CONFIG_I: Configured from console by admin on console
+May 19 12:00:10.456 UTC: %LINK-3-UPDOWN: Interface GigabitEthernet0/1, changed state to up
+May 19 12:00:20.789 UTC: %LINEPROTO-5-UPDOWN: Line protocol on Interface GigabitEthernet0/1, changed state to up
+May 19 12:01:00.000 UTC: %SYS-6-LOGGINGHOST_STARTSTOP: Logging to host 192.168.1.100 started - CLI initiated
+May 19 12:01:30.123 UTC: %OSPF-5-ADJCHG: Process 1, Nbr 192.168.1.2 on GigabitEthernet0/1 from LOADING to FULL, Loading Done

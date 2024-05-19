@@ -1,0 +1,5 @@
+May 19 12:00:00 sw01 mgd[1234]: UI_CMDLINE_READ_LINE: User 'admin' entered command 'show interfaces terse'
+May 19 12:00:10 sw01 fpc0 Interface ge-0/0/1.0, Changed state to up
+May 19 12:00:20 sw01 fpc0 Interface ge-0/0/1.0, Changed state to down
+May 19 12:01:00 sw01 mgd[1234]: UI_DBASE_LOGOUT_EVENT: User 'admin' exiting configuration mode
+May 19 12:01:30 sw01 sshd[5678]: Accepted publickey for admin from 192.168.1.100 port 22 ssh2
