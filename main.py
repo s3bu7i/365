@@ -1,7 +1,7 @@
 import os
 
 # Define the base folder name
-base_folder = "2024.05."
+base_folder = "2024.06."
 
 # Define the number of folders to create
 num_folders = 30
