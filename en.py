@@ -1,25 +1,18 @@
-def encrypt(text, shift):
-    encrypted_text = ''
-    for char in text:
-        if char.isalpha():
-            shifted = ord(char) + shift
-            if char.islower():
-                if shifted > ord('z'):
-                    shifted -= 26
-                elif shifted < ord('a'):
-                    shifted += 26
-            elif char.isupper():
-                if shifted > ord('Z'):
-                    shifted -= 26
-                elif shifted < ord('A'):
-                    shifted += 26
-            encrypted_text += chr(shifted)
-        else:
-            encrypted_text += char
-    return encrypted_text
 
-text = input("Enter text to encrypt: ")
-shift = int(input("Enter the shift value: "))
+import pyautogui as pt
+import time
+limit = int(input("Say: "))
+message = input("message: ")
+time.sleep(5)
 
-encrypted_text = encrypt(text, shift)
-print("Encrypted text:", encrypted_text)
+i = 0
+
+while i < limit:
+    pt.write(message)
+    pt.press("enter")
+    i = i + 1
+    print(i)
+
+    time.sleep(0.1)
+    
+    
