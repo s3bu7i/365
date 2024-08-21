@@ -1,0 +1,60 @@
+from collections import deque, defaultdict
+
+def solve_game(n, m, edges):
+    # Out-degree and reverse graph construction
+    out_degree = [0] * (n + 1)
+    rev_graph = defaultdict(list)
+    
+    for u, v in edges:
+        out_degree[u] += 1
+        rev_graph[v].append(u)
+    
+    # To store the result of the game from each vertex
+    result = ['DRAW'] * (n + 1)
+    
+    # BFS queue
+    queue = deque()
+    
+    # Start from all terminal vertices (out-degree 0)
+    for i in range(1, n + 1):
+        if out_degree[i] == 0:
+            result[i] = 'SECOND'
+            queue.append(i)
+    
+    # Process the vertices in reverse order
+    while queue:
+        u = queue.popleft()
+        
+        for v in rev_graph[u]:
+            if result[u] == 'SECOND' and result[v] == 'DRAW':
+                result[v] = 'FIRST'
+                queue.append(v)
+            elif result[u] == 'FIRST':
+                out_degree[v] -= 1
+                if out_degree[v] == 0 and result[v] == 'DRAW':
+                    result[v] = 'SECOND'
+                    queue.append(v)
+    
+    # Print the result for all vertices
+    print('\n'.join(result[1:]))
+    print()
+
+def main():
+    import sys
+    input = sys.stdin.read
+    data = input().splitlines()
+    
+    idx = 0
+    while idx < len(data):
+        n, m = map(int, data[idx].split())
+        edges = []
+        for i in range(1, m + 1):
+            u, v = map(int, data[idx + i].split())
+            edges.append((u, v))
+        
+        solve_game(n, m, edges)
+        
+        idx += m + 1
+
+if __name__ == "__main__":
+    main()
