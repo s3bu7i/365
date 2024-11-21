@@ -1,0 +1,8 @@
+is_global = true
+build_property.RootNamespace = shopapp.data
+build_property.ProjectDir = C:\Users\Dino\Documents\GitHub\365\shopapp\shopapp\shopapp.data\
+build_property.EnableComHosting = 
+build_property.EnableGeneratedComInterfaceComImportInterop = 
+build_property.CsWinRTUseWindowsUIXamlProjections = false
+build_property.EffectiveAnalysisLevelStyle = 
+build_property.EnableCodeStyleSeverity = 
