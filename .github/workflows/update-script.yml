@@ -17,18 +17,24 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v3
 
-      # 2. İş qovluğunu yoxlayır
+      # 2. Git konfiqurasiyasını təyin edir
+      - name: Configure Git
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+
+      # 3. İş qovluğunu yoxlayır
       - name: Check working directory
         run: pwd
 
-      # 3. Faylları siyahıya salır
+      # 4. Faylları siyahıya salır
       - name: List all files
         run: ls -al
 
-      # 4. Skripti icra etməzdən əvvəl onu icazəli edir
+      # 5. Skripti icra etməzdən əvvəl onu icazəli edir
       - name: Make script executable
         run: chmod +x ./update_script.sh
 
-      # 5. Skripti icra edir
+      # 6. Skripti icra edir
       - name: Run update script
         run: ./update_script.sh
