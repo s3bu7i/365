@@ -1,0 +1,34 @@
+name: Update Script Workflow
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  update-script-job:
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1. Repository-ni klonlayır
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      # 2. İş qovluğunu yoxlayır
+      - name: Check working directory
+        run: pwd
+
+      # 3. Faylları siyahıya salır
+      - name: List all files
+        run: ls -al
+
+      # 4. Skripti icra etməzdən əvvəl onu icazəli edir
+      - name: Make script executable
+        run: chmod +x ./update_script.sh
+
+      # 5. Skripti icra edir
+      - name: Run update script
+        run: ./update_script.sh
