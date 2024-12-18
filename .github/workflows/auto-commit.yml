@@ -1,0 +1,46 @@
+name: Auto Commit and Push
+
+on:
+  schedule:
+    # Runs every 4 hours (6 times a day)
+    - cron: "0 0,4,8,12,16,20 * * *"
+  workflow_dispatch: # Allows manual triggering of the workflow
+
+jobs:
+  auto-commit:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Step 1: Clone the repository
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      # Step 2: Configure Git user
+      - name: Configure Git User
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+      # Step 3: Make script executable (optional)
+      - name: Make Script Executable
+        run: chmod +x ./update_script.sh
+
+      # Step 4: Execute the script
+      - name: Run Update Script
+        run: |
+          ./update_script.sh
+
+      # Step 5: Add changes to Git
+      - name: Add Changes
+        run: |
+          git add -A
+
+      # Step 6: Commit changes
+      - name: Commit Changes
+        run: |
+          git commit -m "Auto-commit: Update changes from update_script.sh" || echo "No changes to commit"
+
+      # Step 7: Push changes to the repository
+      - name: Push Changes
+        run: |
+          git push origin main
