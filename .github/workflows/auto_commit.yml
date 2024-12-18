@@ -1,0 +1,30 @@
+name: Auto Commit and Push
+
+on:
+  schedule:
+    # Gündə 6 dəfə (hər 4 saatda bir)
+    - cron: "0 0,4,8,12,16,20 * * *"
+
+  workflow_dispatch: # Manual olaraq da işə salmaq üçün
+
+jobs:
+  auto-commit:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Repository klonlanır
+        uses: actions/checkout@v3
+
+      - name: Git istifadəçi konfiqurasiyası
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+      - name: Skript icra olunur
+        run: |
+          ./auto_commit.yml
+
+
+      - name: Commit və Push
+        run: |
+          git push
