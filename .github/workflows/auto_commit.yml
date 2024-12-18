@@ -22,7 +22,8 @@ jobs:
 
       - name: Skript icra olunur
         run: |
-          ./update_script.sh
+          ./auto_commit.yml
+
 
       - name: Commit və Push
         run: |
