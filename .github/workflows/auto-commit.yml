@@ -21,19 +21,19 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
 
-      # Step 3: Make script executable (optional)
+      # Step 3: Make script executable (if update_script.sh exists)
       - name: Make Script Executable
+        if: exists('./update_script.sh')
         run: chmod +x ./update_script.sh
 
-      # Step 4: Execute the script
+      # Step 4: Execute the script (if update_script.sh exists)
       - name: Run Update Script
-        run: |
-          ./update_script.sh
+        if: exists('./update_script.sh')
+        run: ./update_script.sh
 
       # Step 5: Add changes to Git
       - name: Add Changes
-        run: |
-          git add -A
+        run: git add -A
 
       # Step 6: Commit changes
       - name: Commit Changes
@@ -46,4 +46,4 @@ jobs:
           TOKEN: ${{ secrets.GH_PAT }}
         run: |
           git remote set-url origin https://x-access-token:${TOKEN}@github.com/s3bu7i/365.git
-          git push origin main
+          git push origin main || echo "Push failed. Check token permissions or branch protection rules."
