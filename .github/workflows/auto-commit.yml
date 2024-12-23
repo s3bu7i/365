@@ -23,13 +23,21 @@ jobs:
 
       # Step 3: Skripti icraedilən etmək (əgər varsa)
       - name: Make Script Executable
-        if: exists('./update_script.sh')
-        run: chmod +x ./update_script.sh
+        run: |
+          if [ -f "./update_script.sh" ]; then
+            chmod +x ./update_script.sh
+          else
+            echo "update_script.sh not found, skipping."
+          fi
 
       # Step 4: Skripti icra etmək
       - name: Run Update Script
-        if: exists('./update_script.sh')
-        run: ./update_script.sh
+        run: |
+          if [ -f "./update_script.sh" ]; then
+            ./update_script.sh
+          else
+            echo "update_script.sh not found, skipping."
+          fi
 
       # Step 5: Dəyişiklikləri Git-ə əlavə etmək
       - name: Add Changes
