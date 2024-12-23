@@ -2,48 +2,50 @@ name: Auto Commit and Push
 
 on:
   schedule:
-    # Runs every 4 hours (6 times a day)
-    - cron: "0 0,4,8,12,16,20 * * *"
-  workflow_dispatch: # Allows manual triggering of the workflow
+    # Gündə 4 dəfə işləyir
+    - cron: "0 0,6,12,18 * * *"
+  workflow_dispatch: # Manual işə salmaq üçün
 
 jobs:
   auto-commit:
     runs-on: ubuntu-latest
 
     steps:
-      # Step 1: Checkout the repository
+      # Step 1: Repository-ni yoxlamaq
       - name: Checkout Repository
         uses: actions/checkout@v3
 
-      # Step 2: Configure Git user
+      # Step 2: Git istifadəçisini konfiqurasiya etmək
       - name: Configure Git User
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
 
-      # Step 3: Make script executable (if update_script.sh exists)
+      # Step 3: Skripti icraedilən etmək (əgər varsa)
       - name: Make Script Executable
         if: exists('./update_script.sh')
         run: chmod +x ./update_script.sh
 
-      # Step 4: Execute the script (if update_script.sh exists)
+      # Step 4: Skripti icra etmək
       - name: Run Update Script
         if: exists('./update_script.sh')
         run: ./update_script.sh
 
-      # Step 5: Add changes to Git
+      # Step 5: Dəyişiklikləri Git-ə əlavə etmək
       - name: Add Changes
         run: git add -A
 
-      # Step 6: Commit changes
+      # Step 6: Random commit mesajı ilə commit etmək
       - name: Commit Changes
         run: |
-          git commit -m "Auto-commit: Update changes from update_script.sh" || echo "No changes to commit"
+          MESSAGES=("Update content" "Minor adjustments" "Improved automation" "Synced latest changes" "Refactor updates" "Fixed minor issues")
+          RANDOM_MESSAGE=${MESSAGES[$RANDOM % ${#MESSAGES[@]}]}
+          git commit -m "${RANDOM_MESSAGE}" || echo "No changes to commit"
 
-      # Step 7: Push changes to the repository using Personal Access Token (PAT)
+      # Step 7: Dəyişiklikləri push etmək
       - name: Push Changes
         env:
-          TOKEN: ${{ secrets.GH_PAT }}
+          TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           git remote set-url origin https://x-access-token:${TOKEN}@github.com/s3bu7i/365.git
           git push origin main || echo "Push failed. Check token permissions or branch protection rules."
