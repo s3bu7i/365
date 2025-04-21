@@ -1,8 +1,5 @@
 #!/bin/bash
-
-# Repo-nun yerli yolunu daxil edin
-REPO_PATH="https://github.com/s3bu7i/365"
-cd $REPO_PATH
+set -e
 
 # Faylı yenilə (random mətn əlavə et)
 echo "Update: $(date)" >> updates.txt
@@ -11,3 +8,4 @@ echo "Update: $(date)" >> updates.txt
 git add updates.txt
 git commit -m "Auto commit at $(date)"
 git push origin main
+
