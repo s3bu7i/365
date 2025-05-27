@@ -1,0 +1,923 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Banking Sector Health Report</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .header {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+            backdrop-filter: blur(10px);
+        }
+        
+        .header h1 {
+            font-size: 2.5em;
+            color: #2c3e50;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+        
+        .header p {
+            color: #7f8c8d;
+            text-align: center;
+            font-size: 1.1em;
+        }
+        
+        .controls {
+            background: rgba(255, 255, 255, 0.9);
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+        
+        .control-group {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .control-item {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+        
+        .control-item label {
+            font-weight: 600;
+            color: #2c3e50;
+        }
+        
+        select, input, button {
+            padding: 10px 15px;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+        
+        select:focus, input:focus {
+            border-color: #667eea;
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+        
+        button {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+            transition: transform 0.2s ease;
+        }
+        
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+        }
+        
+        .dashboard {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 25px;
+            margin-bottom: 30px;
+        }
+        
+        .card {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 25px;
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+            backdrop-filter: blur(10px);
+            transition: transform 0.3s ease;
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .card h3 {
+            color: #2c3e50;
+            margin-bottom: 20px;
+            font-size: 1.3em;
+            text-align: center;
+        }
+        
+        .chart-container {
+            position: relative;
+            height: 300px;
+            margin-bottom: 15px;
+        }
+        
+        .metrics {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .metric-card {
+            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+            padding: 15px;
+            border-radius: 12px;
+            text-align: center;
+            border-left: 4px solid #667eea;
+        }
+        
+        .metric-value {
+            font-size: 1.8em;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+        
+        .metric-label {
+            color: #6c757d;
+            font-size: 0.9em;
+            margin-top: 5px;
+        }
+        
+        .data-table {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+            overflow-x: auto;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+        
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #e9ecef;
+        }
+        
+        th {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            font-weight: 600;
+        }
+        
+        tr:hover {
+            background: rgba(102, 126, 234, 0.05);
+        }
+        
+        .export-section {
+            background: rgba(255, 255, 255, 0.9);
+            padding: 20px;
+            border-radius: 15px;
+            text-align: center;
+            margin-top: 30px;
+        }
+        
+        .status-indicator {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-right: 8px;
+        }
+        
+        .status-good { background-color: #28a745; }
+        .status-warning { background-color: #ffc107; }
+        .status-danger { background-color: #dc3545; }
+        
+        @media (max-width: 768px) {
+            .dashboard {
+                grid-template-columns: 1fr;
+            }
+            
+            .control-group {
+                flex-direction: column;
+            }
+            
+            .metrics {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Banking Sector Health Report</h1>
+            <p>Comprehensive Analysis of Banking Performance, Risk Metrics, and Economic Indicators</p>
+        </div>
+        
+        <div class="controls">
+            <div class="control-group">
+                <div class="control-item">
+                    <label>Country/Region:</label>
+                    <select id="countrySelect">
+                        <option value="US">United States</option>
+                        <option value="EU">European Union</option>
+                        <option value="UK">United Kingdom</option>
+                        <option value="JP">Japan</option>
+                        <option value="CN">China</option>
+                    </select>
+                </div>
+                <div class="control-item">
+                    <label>Time Period:</label>
+                    <select id="periodSelect">
+                        <option value="5Y">Last 5 Years</option>
+                        <option value="3Y">Last 3 Years</option>
+                        <option value="1Y">Last 1 Year</option>
+                    </select>
+                </div>
+                <div class="control-item">
+                    <label>Bank Type:</label>
+                    <select id="bankTypeSelect">
+                        <option value="all">All Banks</option>
+                        <option value="commercial">Commercial Banks</option>
+                        <option value="investment">Investment Banks</option>
+                        <option value="regional">Regional Banks</option>
+                    </select>
+                </div>
+                <button onclick="updateDashboard()">Update Analysis</button>
+                <button onclick="generateReport()">Generate Report</button>
+            </div>
+        </div>
+        
+        <div class="dashboard">
+            <div class="card">
+                <h3>Capital Adequacy Ratio Trends</h3>
+                <div class="chart-container">
+                    <canvas id="capitalRatioChart"></canvas>
+                </div>
+                <div class="metrics">
+                    <div class="metric-card">
+                        <div class="metric-value" id="avgCapitalRatio">12.5%</div>
+                        <div class="metric-label">Average CAR</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-value" id="capitalTrend">+0.8%</div>
+                        <div class="metric-label">YoY Change</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card">
+                <h3>Non-Performing Loans (NPL) Analysis</h3>
+                <div class="chart-container">
+                    <canvas id="nplChart"></canvas>
+                </div>
+                <div class="metrics">
+                    <div class="metric-card">
+                        <div class="metric-value" id="nplRatio">2.8%</div>
+                        <div class="metric-label">Current NPL Ratio</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-value" id="nplTrend">-0.3%</div>
+                        <div class="metric-label">YoY Change</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card">
+                <h3>Return on Assets (ROA) & Return on Equity (ROE)</h3>
+                <div class="chart-container">
+                    <canvas id="profitabilityChart"></canvas>
+                </div>
+                <div class="metrics">
+                    <div class="metric-card">
+                        <div class="metric-value" id="avgROA">1.2%</div>
+                        <div class="metric-label">Average ROA</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-value" id="avgROE">11.8%</div>
+                        <div class="metric-label">Average ROE</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card">
+                <h3>Liquidity Coverage Ratio</h3>
+                <div class="chart-container">
+                    <canvas id="liquidityChart"></canvas>
+                </div>
+                <div class="metrics">
+                    <div class="metric-card">
+                        <div class="metric-value" id="lcrRatio">125%</div>
+                        <div class="metric-label">Current LCR</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-value" id="lcrStatus">Good</div>
+                        <div class="metric-label">Status</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card">
+                <h3>Credit Growth vs GDP Growth</h3>
+                <div class="chart-container">
+                    <canvas id="creditGrowthChart"></canvas>
+                </div>
+                <div class="metrics">
+                    <div class="metric-card">
+                        <div class="metric-value" id="creditGrowth">5.2%</div>
+                        <div class="metric-label">Credit Growth</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-value" id="gdpGrowth">2.8%</div>
+                        <div class="metric-label">GDP Growth</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card">
+                <h3>Interest Rate Environment</h3>
+                <div class="chart-container">
+                    <canvas id="interestRateChart"></canvas>
+                </div>
+                <div class="metrics">
+                    <div class="metric-card">
+                        <div class="metric-value" id="baseRate">4.75%</div>
+                        <div class="metric-label">Base Rate</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-value" id="netInterestMargin">3.2%</div>
+                        <div class="metric-label">Net Interest Margin</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="data-table">
+            <h3>Banking Sector Key Performance Indicators</h3>
+            <table id="kpiTable">
+                <thead>
+                    <tr>
+                        <th>Metric</th>
+                        <th>Current Value</th>
+                        <th>Previous Period</th>
+                        <th>Change</th>
+                        <th>Status</th>
+                        <th>Benchmark</th>
+                    </tr>
+                </thead>
+                <tbody id="kpiTableBody">
+                </tbody>
+            </table>
+        </div>
+        
+        <div class="export-section">
+            <h3>Export Options</h3>
+            <button onclick="exportToExcel()">📊 Export to Excel</button>
+            <button onclick="exportToPDF()">📄 Generate PDF Report</button>
+            <button onclick="downloadData()">💾 Download Raw Data</button>
+        </div>
+    </div>
+
+    <script>
+        // Sample banking sector data - in real implementation, this would come from APIs
+        let bankingData = {
+            US: {
+                capitalRatio: [11.8, 12.1, 12.3, 12.5, 12.7],
+                nplRatio: [3.5, 3.2, 3.0, 2.8, 2.6],
+                roa: [1.0, 1.1, 1.2, 1.2, 1.3],
+                roe: [10.5, 11.2, 11.8, 11.8, 12.1],
+                lcr: [118, 122, 125, 128, 130],
+                creditGrowth: [4.2, 4.8, 5.2, 5.5, 5.8],
+                gdpGrowth: [2.2, 2.5, 2.8, 3.1, 2.9],
+                baseRate: [2.25, 3.00, 4.25, 4.75, 5.00],
+                nim: [2.8, 3.0, 3.2, 3.4, 3.3]
+            },
+            EU: {
+                capitalRatio: [13.2, 13.5, 13.8, 14.1, 14.3],
+                nplRatio: [4.2, 3.8, 3.5, 3.2, 2.9],
+                roa: [0.8, 0.9, 1.0, 1.1, 1.2],
+                roe: [8.5, 9.2, 9.8, 10.1, 10.5],
+                lcr: [142, 145, 148, 150, 152],
+                creditGrowth: [2.8, 3.2, 3.8, 4.1, 4.5],
+                gdpGrowth: [1.8, 2.1, 2.5, 2.8, 2.6],
+                baseRate: [0.00, 0.50, 2.00, 3.50, 4.00],
+                nim: [2.2, 2.4, 2.6, 2.8, 2.7]
+            }
+        };
+        
+        let currentData = bankingData.US;
+        let charts = {};
+        
+        // Initialize dashboard
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeCharts();
+            updateKPITable();
+        });
+        
+        function initializeCharts() {
+            const labels = ['2020', '2021', '2022', '2023', '2024'];
+            
+            // Capital Adequacy Ratio Chart
+            charts.capitalRatio = new Chart(document.getElementById('capitalRatioChart'), {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Capital Adequacy Ratio (%)',
+                        data: currentData.capitalRatio,
+                        borderColor: '#667eea',
+                        backgroundColor: 'rgba(102, 126, 234, 0.1)',
+                        fill: true,
+                        tension: 0.4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: false,
+                            title: { display: true, text: 'Percentage (%)' }
+                        }
+                    }
+                }
+            });
+            
+            // NPL Chart
+            charts.npl = new Chart(document.getElementById('nplChart'), {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'NPL Ratio (%)',
+                        data: currentData.nplRatio,
+                        backgroundColor: '#ff6b6b',
+                        borderColor: '#ff5252',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            title: { display: true, text: 'Percentage (%)' }
+                        }
+                    }
+                }
+            });
+            
+            // Profitability Chart
+            charts.profitability = new Chart(document.getElementById('profitabilityChart'), {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'ROA (%)',
+                        data: currentData.roa,
+                        borderColor: '#4ecdc4',
+                        backgroundColor: 'rgba(78, 205, 196, 0.1)',
+                        yAxisID: 'y'
+                    }, {
+                        label: 'ROE (%)',
+                        data: currentData.roe,
+                        borderColor: '#45b7d1',
+                        backgroundColor: 'rgba(69, 183, 209, 0.1)',
+                        yAxisID: 'y1'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            type: 'linear',
+                            display: true,
+                            position: 'left',
+                            title: { display: true, text: 'ROA (%)' }
+                        },
+                        y1: {
+                            type: 'linear',
+                            display: true,
+                            position: 'right',
+                            title: { display: true, text: 'ROE (%)' },
+                            grid: { drawOnChartArea: false }
+                        }
+                    }
+                }
+            });
+            
+            // Liquidity Chart
+            charts.liquidity = new Chart(document.getElementById('liquidityChart'), {
+                type: 'doughnut',
+                data: {
+                    labels: ['LCR', 'Regulatory Minimum'],
+                    datasets: [{
+                        data: [125, 100-125],
+                        backgroundColor: ['#667eea', '#e9ecef'],
+                        borderWidth: 0
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { position: 'bottom' }
+                    }
+                }
+            });
+            
+            // Credit Growth Chart
+            charts.creditGrowth = new Chart(document.getElementById('creditGrowthChart'), {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Credit Growth (%)',
+                        data: currentData.creditGrowth,
+                        borderColor: '#f39c12',
+                        backgroundColor: 'rgba(243, 156, 18, 0.1)',
+                        fill: true
+                    }, {
+                        label: 'GDP Growth (%)',
+                        data: currentData.gdpGrowth,
+                        borderColor: '#27ae60',
+                        backgroundColor: 'rgba(39, 174, 96, 0.1)',
+                        fill: true
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            title: { display: true, text: 'Growth Rate (%)' }
+                        }
+                    }
+                }
+            });
+            
+            // Interest Rate Chart
+            charts.interestRate = new Chart(document.getElementById('interestRateChart'), {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Base Rate (%)',
+                        data: currentData.baseRate,
+                        borderColor: '#e74c3c',
+                        backgroundColor: 'rgba(231, 76, 60, 0.1)',
+                        fill: true,
+                        tension: 0.4
+                    }, {
+                        label: 'Net Interest Margin (%)',
+                        data: currentData.nim,
+                        borderColor: '#9b59b6',
+                        backgroundColor: 'rgba(155, 89, 182, 0.1)',
+                        fill: true,
+                        tension: 0.4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            title: { display: true, text: 'Rate (%)' }
+                        }
+                    }
+                }
+            });
+        }
+        
+        function updateKPITable() {
+            const kpis = [
+                {
+                    metric: 'Capital Adequacy Ratio',
+                    current: '12.5%',
+                    previous: '12.3%',
+                    change: '+0.2%',
+                    status: 'good',
+                    benchmark: '10.5%'
+                },
+                {
+                    metric: 'Non-Performing Loans',
+                    current: '2.8%',
+                    previous: '3.0%',
+                    change: '-0.2%',
+                    status: 'good',
+                    benchmark: '<5%'
+                },
+                {
+                    metric: 'Return on Assets',
+                    current: '1.2%',
+                    previous: '1.2%',
+                    change: '0.0%',
+                    status: 'warning',
+                    benchmark: '>1%'
+                },
+                {
+                    metric: 'Return on Equity',
+                    current: '11.8%',
+                    previous: '11.8%',
+                    change: '0.0%',
+                    status: 'good',
+                    benchmark: '>10%'
+                },
+                {
+                    metric: 'Liquidity Coverage Ratio',
+                    current: '125%',
+                    previous: '122%',
+                    change: '+3%',
+                    status: 'good',
+                    benchmark: '>100%'
+                },
+                {
+                    metric: 'Credit Growth Rate',
+                    current: '5.2%',
+                    previous: '4.8%',
+                    change: '+0.4%',
+                    status: 'good',
+                    benchmark: '3-7%'
+                }
+            ];
+            
+            const tbody = document.getElementById('kpiTableBody');
+            tbody.innerHTML = '';
+            
+            kpis.forEach(kpi => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${kpi.metric}</td>
+                    <td><strong>${kpi.current}</strong></td>
+                    <td>${kpi.previous}</td>
+                    <td style="color: ${kpi.change.startsWith('+') ? '#28a745' : kpi.change.startsWith('-') ? '#dc3545' : '#6c757d'}">${kpi.change}</td>
+                    <td><span class="status-indicator status-${kpi.status}"></span>${kpi.status.charAt(0).toUpperCase() + kpi.status.slice(1)}</td>
+                    <td>${kpi.benchmark}</td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+        
+        function updateDashboard() {
+            const country = document.getElementById('countrySelect').value;
+            const period = document.getElementById('periodSelect').value;
+            const bankType = document.getElementById('bankTypeSelect').value;
+            
+            // Update data based on selection
+            if (bankingData[country]) {
+                currentData = bankingData[country];
+                
+                // Update all charts with new data
+                Object.keys(charts).forEach(chartKey => {
+                    if (charts[chartKey] && charts[chartKey].data) {
+                        switch(chartKey) {
+                            case 'capitalRatio':
+                                charts[chartKey].data.datasets[0].data = currentData.capitalRatio;
+                                break;
+                            case 'npl':
+                                charts[chartKey].data.datasets[0].data = currentData.nplRatio;
+                                break;
+                            case 'profitability':
+                                charts[chartKey].data.datasets[0].data = currentData.roa;
+                                charts[chartKey].data.datasets[1].data = currentData.roe;
+                                break;
+                            case 'creditGrowth':
+                                charts[chartKey].data.datasets[0].data = currentData.creditGrowth;
+                                charts[chartKey].data.datasets[1].data = currentData.gdpGrowth;
+                                break;
+                            case 'interestRate':
+                                charts[chartKey].data.datasets[0].data = currentData.baseRate;
+                                charts[chartKey].data.datasets[1].data = currentData.nim;
+                                break;
+                        }
+                        charts[chartKey].update();
+                    }
+                });
+                
+                // Update metric cards
+                updateMetrics();
+            }
+            
+            // Simulate loading animation
+            const button = event.target;
+            button.innerHTML = 'Updating...';
+            button.disabled = true;
+            
+            setTimeout(() => {
+                button.innerHTML = 'Update Analysis';
+                button.disabled = false;
+            }, 1500);
+        }
+        
+        function updateMetrics() {
+            const latest = currentData.capitalRatio.length - 1;
+            
+            document.getElementById('avgCapitalRatio').textContent = currentData.capitalRatio[latest] + '%';
+            document.getElementById('nplRatio').textContent = currentData.nplRatio[latest] + '%';
+            document.getElementById('avgROA').textContent = currentData.roa[latest] + '%';
+            document.getElementById('avgROE').textContent = currentData.roe[latest] + '%';
+            document.getElementById('lcrRatio').textContent = currentData.lcr[latest] + '%';
+            document.getElementById('creditGrowth').textContent = currentData.creditGrowth[latest] + '%';
+            document.getElementById('gdpGrowth').textContent = currentData.gdpGrowth[latest] + '%';
+            document.getElementById('baseRate').textContent = currentData.baseRate[latest] + '%';
+            document.getElementById('netInterestMargin').textContent = currentData.nim[latest] + '%';
+        }
+        
+        function generateReport() {
+            const button = event.target;
+            button.innerHTML = 'Generating...';
+            button.disabled = true;
+            
+            // Simulate report generation
+            setTimeout(() => {
+                alert('Banking Sector Health Report generated successfully!\n\nReport includes:\n• Executive Summary\n• Key Performance Indicators\n• Risk Assessment\n• Regulatory Compliance Status\n• Market Outlook\n• Recommendations');
+                button.innerHTML = 'Generate Report';
+                button.disabled = false;
+            }, 2000);
+        }
+        
+        function exportToExcel() {
+            // Create workbook with multiple sheets
+            const wb = XLSX.utils.book_new();
+            
+            // Summary sheet
+            const summaryData = [
+                ['Banking Sector Health Report'],
+                ['Generated on:', new Date().toLocaleDateString()],
+                [''],
+                ['Key Metrics', 'Current Value', 'Status'],
+                ['Capital Adequacy Ratio', '12.5%', 'Good'],
+                ['NPL Ratio', '2.8%', 'Good'],
+                ['ROA', '1.2%', 'Fair'],
+                ['ROE', '11.8%', 'Good'],
+                ['LCR', '125%', 'Good']
+            ];
+            
+            const ws1 = XLSX.utils.aoa_to_sheet(summaryData);
+            XLSX.utils.book_append_sheet(wb, ws1, 'Summary');
+            
+            // Time series data
+            const timeSeriesData = [
+                ['Year', 'Capital Ratio', 'NPL Ratio', 'ROA', 'ROE', 'LCR'],
+                ['2020', 11.8, 3.5, 1.0, 10.5, 118],
+                ['2021', 12.1, 3.2, 1.1, 11.2, 122],
+                ['2022', 12.3, 3.0, 1.2, 11.8, 125],
+                ['2023', 12.5, 2.8, 1.2, 11.8, 128],
+                ['2024', 12.7, 2.6, 1.3, 12.1, 130]
+            ];
+            
+            const ws2 = XLSX.utils.aoa_to_sheet(timeSeriesData);
+            XLSX.utils.book_append_sheet(wb, ws2, 'Time Series Data');
+            
+            // Download the file
+            XLSX.writeFile(wb, 'Banking_Sector_Health_Report.xlsx');
+        }
+        
+        function exportToPDF() {
+            // Simulate PDF generation
+            const button = event.target;
+            button.innerHTML = 'Generating PDF...';
+            button.disabled = true;
+            
+            setTimeout(() => {
+                alert('PDF report would be generated here. In a real implementation, this would use libraries like jsPDF or server-side PDF generation.');
+                button.innerHTML = '📄 Generate PDF Report';
+                button.disabled = false;
+            }, 2000);
+        }
+        
+        function downloadData() {
+            // Create CSV data
+            const csvData = [
+                ['Metric', 'Q1_2023', 'Q2_2023', 'Q3_2023', 'Q4_2023', 'Q1_2024'],
+                ['Capital Adequacy Ratio (%)', 12.1, 12.2, 12.4, 12.5, 12.7],
+                ['NPL Ratio (%)', 3.2, 3.0, 2.9, 2.8, 2.6],
+                ['ROA (%)', 1.1, 1.15, 1.18, 1.2, 1.25],
+                ['ROE (%)', 11.2, 11.5, 11.7, 11.8, 12.0],
+                ['LCR (%)', 122, 124, 126, 128, 130],
+                ['Credit Growth (%)', 4.8, 5.0, 5.1, 5.2, 5.4],
+                ['GDP Growth (%)', 2.5, 2.7, 2.8, 2.8, 2.9]
+            ];
+            
+            let csvContent = csvData.map(row => row.join(',')).join('\n');
+            
+            const blob = new Blob([csvContent], { type: 'text/csv' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.setAttribute('hidden', '');
+            a.setAttribute('href', url);
+            a.setAttribute('download', 'banking_data.csv');
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+        }
+        
+        // Additional analysis functions
+        function calculateVolatility(data) {
+            const mean = data.reduce((sum, val) => sum + val, 0) / data.length;
+            const variance = data.reduce((sum, val) => sum + Math.pow(val - mean, 2), 0) / data.length;
+            return Math.sqrt(variance);
+        }
+        
+        function calculateCorrelation(x, y) {
+            const n = x.length;
+            const meanX = x.reduce((sum, val) => sum + val, 0) / n;
+            const meanY = y.reduce((sum, val) => sum + val, 0) / n;
+            
+            let numerator = 0;
+            let denomX = 0;
+            let denomY = 0;
+            
+            for (let i = 0; i < n; i++) {
+                const deltaX = x[i] - meanX;
+                const deltaY = y[i] - meanY;
+                numerator += deltaX * deltaY;
+                denomX += deltaX * deltaX;
+                denomY += deltaY * deltaY;
+            }
+            
+            return numerator / Math.sqrt(denomX * denomY);
+        }
+        
+        // Risk assessment
+        function assessBankingRisk() {
+            const riskFactors = {
+                creditRisk: currentData.nplRatio[currentData.nplRatio.length - 1],
+                liquidityRisk: 100 - currentData.lcr[currentData.lcr.length - 1],
+                capitalRisk: 15 - currentData.capitalRatio[currentData.capitalRatio.length - 1],
+                profitabilityRisk: 2 - currentData.roa[currentData.roa.length - 1]
+            };
+            
+            const overallRisk = Object.values(riskFactors).reduce((sum, risk) => sum + Math.max(0, risk), 0);
+            
+            if (overallRisk < 2) return 'Low Risk';
+            if (overallRisk < 5) return 'Medium Risk';
+            return 'High Risk';
+        }
+        
+        // Stress testing simulation
+        function runStressTest() {
+            const stressScenarios = {
+                mild: { nplIncrease: 1.5, capitalDecrease: 1.0, liquidityDecrease: 10 },
+                moderate: { nplIncrease: 3.0, capitalDecrease: 2.0, liquidityDecrease: 20 },
+                severe: { nplIncrease: 5.0, capitalDecrease: 3.0, liquidityDecrease: 30 }
+            };
+            
+            const currentNPL = currentData.nplRatio[currentData.nplRatio.length - 1];
+            const currentCAR = currentData.capitalRatio[currentData.capitalRatio.length - 1];
+            const currentLCR = currentData.lcr[currentData.lcr.length - 1];
+            
+            const results = {};
+            
+            Object.keys(stressScenarios).forEach(scenario => {
+                const stress = stressScenarios[scenario];
+                results[scenario] = {
+                    npl: currentNPL + stress.nplIncrease,
+                    car: currentCAR - stress.capitalDecrease,
+                    lcr: currentLCR - stress.liquidityDecrease
+                };
+            });
+            
+            return results;
+        }
+        
+        // Initialize additional analytics
+        setTimeout(() => {
+            console.log('Banking Sector Risk Assessment:', assessBankingRisk());
+            console.log('Stress Test Results:', runStressTest());
+            console.log('NPL-GDP Correlation:', calculateCorrelation(currentData.nplRatio, currentData.gdpGrowth));
+        }, 1000);
+    </script>
+</body>
+</html>
