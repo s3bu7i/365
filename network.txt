@@ -1,0 +1,159 @@
+Enable DHCP snooping globally on the switch - LAN_sw(config)#ip dhcp snooping 
+
+Enable DHCP snooping only for VLAN 100 - LAN_sw(config)#ip dhcp snooping vlan 100
+
+Disable insertion of Option 82 information into DHCP packets - LAN_sw(config)#no ip dhcp snooping information option
+
+access mode - switchport mode access
+Assign each port to VLAN 100 - switchport access vlan 100
+Enable Spanning Tree PortFast -  spanning-tree portfast
+Enable BPDU Guard - spanning-tree bpduguard enable
+
+trunk mode - switchport mode trunk
+Allow only VLAN 100 on the trunk - switchport trunk allowed vlan 100
+trusted for DHCP snooping - ip dhcp snooping trust
+
+enable password - Branch(config)# enable password admin
+
+
+Exclude the IP address 192.168.100.254 from DHCP - Main_Office(config)# ip dhcp excluded-address 192.168.100.254
+DHCP pool name - Main_Office(config)# ip dhcp pool LAN_Network
+o   Network: 192.168.100.0/24 - Main_Office(dhcp-config)# network 192.168.100.0 255.255.255.0
+o   Default gateway: 192.168.100.254 - Main_Office(dhcp-config)# default-router 192.168.100.254
+o   DNS Server: 172.16.16.2 - Main_Office(dhcp-config)# dns-server 172.16.16.2
+
+Create subinterface - interface GigabitEthernet0/1.100
+802.1Q encapsulation for VLAN 100 - encapsulation dot1Q 100
+Assign IP address: 192.168.100.254/24 -  ip address 192.168.100.254 255.255.255.0
+no shutdown
+
+
+2 router point-to-point
+Main_Office> enable
+Main_Office# configure terminal
+interface GigabitEthernet0/0
+ ip address 10.10.12.2 255.255.255.252
+ no shutdown
+exit
+
+--------------------------------------------------------------------------------------------------------------------
+
+OSPF authentication on both interfaces using the key: secret - 
+Main_Office# configure terminal
+interface GigabitEthernet0/0
+ ip ospf message-digest-key 1 md5 secret
+ ip ospf authentication message-digest
+exit
+
+router ospf 1
+ network 10.10.12.0 0.0.0.3 area 0
+exit
+
+Branch# configure terminal
+interface GigabitEthernet0/0
+ ip ospf message-digest-key 1 md5 secret
+ ip ospf authentication message-digest
+exit
+
+router ospf 1
+ network 10.10.12.0 0.0.0.3 area 0
+exit
+
+
+---------------------------------------------------------------------------------------------------------------------
+Enable OSPF on both routers with:
+
+o   Process ID: 100
+o   Area: 0
+
+Advertise the following networks:
+o   On Main_Office:
+§  10.10.12.0/30
+§  192.168.100.0/24
+
+router ospf 100
+ network 10.10.12.0 0.0.0.3 area 0
+ network 192.168.100.0 0.0.0.255 area 0
+exit
+
+
+! Create Loopback interface for 10.11.11.11/32
+interface Loopback0
+ ip address 10.11.11.11 255.255.255.255
+exit
+
+3. Enable OSPF adjacency logging on both routers.
+router ospf 100 
+logging adjacency
+
+------------------------------------------------------------------------------------------------------------
+
+looback conf
+! Configure Loopback0 with /32
+interface Loopback0
+ ip address 10.11.11.11 255.255.255.255
+exit
+
+-----------------------------------------------------------------------------------
+! Create local user
+username admin password admin
+
+! Set domain name
+ip domain-name khazar.org
+exit
+
+
+-----------------------------------------------------------------------------------------
+Set Domain Name - Branch(config)# ip domain-name khazar.org
+Create Local User - Branch(config)# username admin privilege 15 secret admin
+Generate RSA Keys - Branch(config)# crypto key generate rsa
+Enable SSH on VTY Lines (and disable Telnet) - 
+Branch(config)# line vty 0 4
+Branch(config-line)# transport input ssh
+Branch(config-line)# login local
+Branch(config-line)# exit
+
+-------------------------------------------------------------------------------------------------------
+
+⁻ Enable portsecurity - switchport port-security
+⁻ Max MAC address 1 (one) - switchport port-security maximum 1
+⁻ Violoation mode restrict - switchport port-security violation restrict
+⁻ Portsecurity option - sticky - switchport port-security mac-address sticky
+
+
+
+switchport trunk encapsulation dot1q
+switchport mode trunk
+switchport trunk allowed vlan 10
+
+
+Configure DHCP Server on the Enterprise Router - 
+Pool name: LAN_Network (Note: Pool name is case-sensitive) - ip dhcp pool LAN_Network
+Network for LAN network: 192.168.10.0/24 - network 192.168.10.0 255.255.255.0
+Default router IP address: 192.168.10.1/24 - default-router 192.168.10.1
+DNS Server IP address: 192.168.10.1/24 - dns-server 192.168.10.1
+Exclude IP address 192.168.10.1 from DHCP Server - ip dhcp excluded-address 192.168.10.1
+
+
+-----------------------------------------------------------------------------------------------------------
+
+Disable insertion of Option 82 - LAN(config)# no ip dhcp snooping information option
+Configure VTY lines (0–15) to: 
+line vty 0 15
+ login local
+ transport input ssh
+
+
+
+Configure Loopback0 with IP 2.2.2.2/32
+interface Loopback0
+ ip address 2.2.2.2 255.255.255.255
+ no shutdown
+
+
+
+Static Route Configuration - ip route destip subnet nextip
+
+
+
+
