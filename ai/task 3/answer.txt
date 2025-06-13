@@ -1,0 +1,221 @@
+=== CREDIT DEFAULT PREDICTION USING LOGISTIC REGRESSION ===
+
+1. LOADING AND EXPLORING THE DATASET
+--------------------------------------------------
+Dataset loaded successfully!
+Shape: (150000, 12)
+
+Dataset Info:
+Rows: 150000, Columns: 12
+
+Column names:
+1. Unnamed: 0
+2. SeriousDlqin2yrs
+3. RevolvingUtilizationOfUnsecuredLines
+4. age
+5. NumberOfTime30-59DaysPastDueNotWorse
+6. DebtRatio
+7. MonthlyIncome
+8. NumberOfOpenCreditLinesAndLoans
+9. NumberOfTimes90DaysLate
+10. NumberRealEstateLoansOrLines
+11. NumberOfTime60-89DaysPastDueNotWorse
+12. NumberOfDependents
+
+First few rows:
+   Unnamed: 0  SeriousDlqin2yrs  RevolvingUtilizationOfUnsecuredLines  age  ...  NumberOfTimes90DaysLate  NumberRealEstateLoansOrLines  NumberOfTime60-89DaysPastDueNotWorse  NumberOfDependents
+0           1                 1                              0.766127   45  ...                        0                             6                                     0                 2.0
+1           2                 0                              0.957151   40  ...                        0                             0                                     0                 1.0
+2           3                 0                              0.658180   38  ...                        1                             0                                     0                 0.0
+3           4                 0                              0.233810   30  ...                        0                             0                                     0                 0.0
+4           5                 0                              0.907239   49  ...                        0                             1                                     0                 0.0
+
+[5 rows x 12 columns]
+
+Data types:
+Unnamed: 0                                int64
+SeriousDlqin2yrs                          int64
+RevolvingUtilizationOfUnsecuredLines    float64
+age                                       int64
+NumberOfTime30-59DaysPastDueNotWorse      int64
+DebtRatio                               float64
+MonthlyIncome                           float64
+NumberOfOpenCreditLinesAndLoans           int64
+NumberOfTimes90DaysLate                   int64
+NumberRealEstateLoansOrLines              int64
+NumberOfTime60-89DaysPastDueNotWorse      int64
+NumberOfDependents                      float64
+dtype: object
+
+Missing values:
+Unnamed: 0                                  0
+SeriousDlqin2yrs                            0
+RevolvingUtilizationOfUnsecuredLines        0
+age                                         0
+NumberOfTime30-59DaysPastDueNotWorse        0
+DebtRatio                                   0
+MonthlyIncome                           29731
+NumberOfOpenCreditLinesAndLoans             0
+NumberOfTimes90DaysLate                     0
+NumberRealEstateLoansOrLines                0
+NumberOfTime60-89DaysPastDueNotWorse        0
+NumberOfDependents                       3924
+dtype: int64
+
+Target variable distribution:
+SeriousDlqin2yrs
+0    139974
+1     10026
+Name: count, dtype: int64
+Class distribution:
+SeriousDlqin2yrs
+0    0.93316
+1    0.06684
+Name: proportion, dtype: float64
+
+2. DATA PREPROCESSING
+--------------------------------------------------
+Handling missing values...
+Filled MonthlyIncome missing values with median: 5400.0
+Filled NumberOfDependents missing values with median: 0.0
+
+Handling outliers...
+Removed 339 extreme outliers from RevolvingUtilizationOfUnsecuredLines
+Removed 23917 extreme outliers from NumberOfTime30-59DaysPastDueNotWorse
+Removed 26266 extreme outliers from DebtRatio
+Removed 1290 extreme outliers from MonthlyIncome
+Removed 285 extreme outliers from NumberOfOpenCreditLinesAndLoans
+Removed 3162 extreme outliers from NumberOfTimes90DaysLate
+Removed 80 extreme outliers from NumberRealEstateLoansOrLines
+Removed 1951 extreme outliers from NumberOfTime60-89DaysPastDueNotWorse
+Removed 617 extreme outliers from NumberOfDependents
+Final dataset shape: (92093, 11)
+
+3. FEATURE ENGINEERING
+--------------------------------------------------
+Features: ['RevolvingUtilizationOfUnsecuredLines', 'age', 'NumberOfTime30-59DaysPastDueNotWorse', 'DebtRatio', 'MonthlyIncome', 'NumberOfOpenCreditLinesAndLoans', 'NumberOfTimes90DaysLate', 'NumberRealEstateLoansOrLines', 'NumberOfTime60-89DaysPastDueNotWorse', 'NumberOfDependents']
+Target: SeriousDlqin2yrs
+Features scaled using StandardScaler
+
+4. TRAIN-TEST SPLIT
+--------------------------------------------------
+Training set: 73674 samples
+Test set: 18419 samples
+Training set class distribution:
+SeriousDlqin2yrs
+0    0.970912
+1    0.029088
+Name: proportion, dtype: float64
+
+5. PART A: BASIC LOGISTIC REGRESSION MODEL
+==================================================
+Basic Logistic Regression Results:
+----------------------------------------
+AUC Score: 0.7608
+Precision: 0.0000
+Recall: 0.0000
+F1-Score: 0.0000
+
+Confusion Matrix:
+[[17882     1]
+ [  536     0]]
+
+Classification Report:
+              precision    recall  f1-score   support
+
+           0       0.97      1.00      0.99     17883
+           1       0.00      0.00      0.00       536
+
+    accuracy                           0.97     18419
+   macro avg       0.49      0.50      0.49     18419
+weighted avg       0.94      0.97      0.96     18419
+
+
+6. PART B: ADDRESSING CLASS IMBALANCE
+==================================================
+Method 1: Class Weighting
+------------------------------
+Class weights: {0: np.float64(0.5149795193692245), 1: np.float64(17.189454036397574)}
+Weighted Logistic Regression Results:
+AUC Score: 0.7602
+Precision: 0.0679
+Recall: 0.6866
+F1-Score: 0.1236
+
+Method 2: SMOTE (Synthetic Minority Oversampling)
+--------------------------------------------------
+Original training set: 73674 samples
+SMOTE training set: 143062 samples
+SMOTE class distribution:
+SeriousDlqin2yrs
+0    0.5
+1    0.5
+Name: proportion, dtype: float64
+SMOTE Logistic Regression Results:
+AUC Score: 0.7607
+Precision: 0.0679
+Recall: 0.6866
+F1-Score: 0.1236
+
+7. PART C: ODDS RATIOS ANALYSIS
+==================================================
+Odds Ratios Analysis:
+------------------------------
+                                Feature  Coefficient  Odds_Ratio  Log_Odds
+0  RevolvingUtilizationOfUnsecuredLines       0.7353      2.0860    0.7353
+5       NumberOfOpenCreditLinesAndLoans       0.2220      1.2486    0.2220
+7          NumberRealEstateLoansOrLines       0.1291      1.1378    0.1291
+3                             DebtRatio       0.1124      1.1190    0.1124
+9                    NumberOfDependents       0.0418      1.0427    0.0418
+6               NumberOfTimes90DaysLate       0.0000      1.0000    0.0000
+8  NumberOfTime60-89DaysPastDueNotWorse       0.0000      1.0000    0.0000
+2  NumberOfTime30-59DaysPastDueNotWorse       0.0000      1.0000    0.0000
+4                         MonthlyIncome      -0.1833      0.8325   -0.1833
+1                                   age      -0.3147      0.7300   -0.3147
+
+Interpretation of Odds Ratios:
+----------------------------------------
+• RevolvingUtilizationOfUnsecuredLines: INCREASES odds of default by 108.6% (OR = 2.086)
+• NumberOfOpenCreditLinesAndLoans: INCREASES odds of default by 24.9% (OR = 1.249)
+• NumberRealEstateLoansOrLines: INCREASES odds of default by 13.8% (OR = 1.138)
+• DebtRatio: INCREASES odds of default by 11.9% (OR = 1.119)
+• NumberOfDependents: INCREASES odds of default by 4.3% (OR = 1.043)
+• NumberOfTimes90DaysLate: No effect on odds of default (OR = 1.000)
+• NumberOfTime60-89DaysPastDueNotWorse: No effect on odds of default (OR = 1.000)
+• NumberOfTime30-59DaysPastDueNotWorse: No effect on odds of default (OR = 1.000)
+• MonthlyIncome: DECREASES odds of default by 16.7% (OR = 0.833)
+• age: DECREASES odds of default by 27.0% (OR = 0.730)
+
+8. MODEL COMPARISON SUMMARY
+==================================================
+Model Performance Comparison:
+         Model     AUC  Precision  Recall  F1-Score
+0     Basic LR  0.7608     0.0000  0.0000    0.0000
+1  Weighted LR  0.7602     0.0679  0.6866    0.1236
+2     SMOTE LR  0.7607     0.0679  0.6866    0.1236
+
+Best performing model: Weighted LR
+
+9. CREATING VISUALIZATIONS
+==================================================
+Visualizations saved as 'credit_default_analysis.png'
+
+10. FINAL RECOMMENDATIONS AND INSIGHTS
+==================================================
+Key Findings:
+• Class imbalance techniques (weighting/SMOTE) improved model performance
+• Features with highest odds ratios indicate strongest predictors of default
+
+Top 5 Risk Factors (increase default odds):
+  - RevolvingUtilizationOfUnsecuredLines: 108.6% increase
+  - NumberOfOpenCreditLinesAndLoans: 24.9% increase
+  - NumberRealEstateLoansOrLines: 13.8% increase
+  - DebtRatio: 11.9% increase
+  - NumberOfDependents: 4.3% increase
+
+Top 5 Protective Factors (decrease default odds):
+  - MonthlyIncome: 16.7% decrease
+  - age: 27.0% decrease
+
+Best Model: Weighted LR
+Recommended for deployment based on balanced performance across all metrics.

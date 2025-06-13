@@ -1,0 +1,111 @@
+=== STEP 1: LOADING AND EXPLORING DATASET ===
+Dataset loaded successfully!
+Dataset shape: (4601, 58)
+Features: 57
+Samples: 4601
+
+=== DATASET OVERVIEW ===
+Spam emails: 1813 (39.4%)
+Ham emails: 2788 (60.6%)
+Missing values: 0
+
+=== STEP 2: DATA PREPROCESSING ===
+Training set: 3680 samples
+Test set: 921 samples
+Features scaled using StandardScaler
+
+=== STEP 3A: SVM WITH LINEAR KERNEL ===
+Linear SVM Results:
+Accuracy: 0.9294
+F1-Score: 0.9093
+AUC: 0.9695
+
+=== STEP 3B: SVM WITH RBF KERNEL (DEFAULT) ===
+RBF SVM Results (default parameters):
+Accuracy: 0.9273
+F1-Score: 0.9055
+AUC: 0.9667
+
+=== STEP 3C: GRID SEARCH FOR RBF KERNEL OPTIMIZATION ===
+Performing Grid Search...
+Parameter grid:
+C: [0.1, 1, 10, 100]
+gamma: ['scale', 'auto', 0.001, 0.01, 0.1, 1]
+Fitting 5 folds for each of 24 candidates, totalling 120 fits
+
+Best parameters: {'C': 10, 'gamma': 0.01}
+Best cross-validation F1-score: 0.9145
+
+Optimized RBF SVM Results:
+Accuracy: 0.9283
+F1-Score: 0.9065
+AUC: 0.9699
+
+=== STEP 4: PERFORMANCE COMPARISON ===
+                 Model  Accuracy  F1-Score     AUC
+0           Linear SVM    0.9294    0.9093  0.9695
+1    RBF SVM (default)    0.9273    0.9055  0.9667
+2  RBF SVM (optimized)    0.9283    0.9065  0.9699
+
+=== DETAILED CLASSIFICATION REPORTS ===
+
+Linear SVM:
+              precision    recall  f1-score   support
+
+           0       0.93      0.95      0.94       558
+           1       0.92      0.90      0.91       363
+
+    accuracy                           0.93       921
+   macro avg       0.93      0.92      0.93       921
+weighted avg       0.93      0.93      0.93       921
+
+
+Optimized RBF SVM:
+              precision    recall  f1-score   support
+
+           0       0.93      0.96      0.94       558
+           1       0.93      0.88      0.91       363
+
+    accuracy                           0.93       921
+   macro avg       0.93      0.92      0.92       921
+weighted avg       0.93      0.93      0.93       921
+
+
+=== STEP 5: VISUALIZATIONS ===
+
+=== GRID SEARCH RESULTS ANALYSIS ===
+
+=== STEP 6: ANALYSIS AND CONCLUSIONS ===
+PERFORMANCE ANALYSIS:
+====================
+Best performing model: Linear SVM
+
+Performance Improvements:
+RBF optimization improved F1-score by: 0.0010
+RBF optimization improved accuracy by: 0.0011
+
+Model Comparison:
+• Linear SVM outperforms RBF SVM
+• This suggests the data is linearly separable
+• Linear SVM is also faster and more interpretable
+
+Hyperparameter Analysis:
+• Best C value: 10
+• Best gamma value: 0.01
+• Higher gamma creates more complex decision boundary
+
+RECOMMENDATION:
+================
+Performance difference is minimal (<1%).
+Recommendation: Use Linear SVM for:
+• Better interpretability
+• Faster training and prediction
+• Lower computational complexity
+
+FINAL METRICS SUMMARY:
+======================
+Best Model: Linear SVM
+Best Accuracy: 0.9294
+Best F1-Score: 0.9093
+Best AUC: 0.9699
+

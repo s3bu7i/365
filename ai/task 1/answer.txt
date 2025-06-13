@@ -1,0 +1,348 @@
+============================================================
+HEART DISEASE PREDICTION WITH FEATURE SELECTION ANALYSIS
+============================================================
+
+1. LOADING AND EXPLORING THE DATASET
+----------------------------------------
+Dataset loaded successfully!
+Shape: (920, 16)
+
+Dataset Info:
+<class 'pandas.core.frame.DataFrame'>
+RangeIndex: 920 entries, 0 to 919
+Data columns (total 16 columns):
+ #   Column    Non-Null Count  Dtype
+---  ------    --------------  -----
+ 0   id        920 non-null    int64
+ 1   age       920 non-null    int64
+ 2   sex       920 non-null    object
+ 3   dataset   920 non-null    object
+ 4   cp        920 non-null    object
+ 5   trestbps  861 non-null    float64
+ 6   chol      890 non-null    float64
+ 7   fbs       830 non-null    object
+ 8   restecg   918 non-null    object
+ 9   thalch    865 non-null    float64
+ 10  exang     865 non-null    object
+ 11  oldpeak   858 non-null    float64
+ 12  slope     611 non-null    object
+ 13  ca        309 non-null    float64
+ 14  thal      434 non-null    object
+ 15  num       920 non-null    int64
+dtypes: float64(5), int64(3), object(8)
+memory usage: 115.1+ KB
+None
+
+First 5 rows:
+   id  age     sex    dataset               cp  trestbps   chol    fbs         restecg  thalch  exang  oldpeak        slope   ca               thal  num
+0   1   63    Male  Cleveland   typical angina     145.0  233.0   True  lv hypertrophy   150.0  False      2.3  downsloping  0.0       fixed defect    0
+1   2   67    Male  Cleveland     asymptomatic     160.0  286.0  False  lv hypertrophy   108.0   True      1.5         flat  3.0             normal    2
+2   3   67    Male  Cleveland     asymptomatic     120.0  229.0  False  lv hypertrophy   129.0   True      2.6         flat  2.0  reversable defect    1
+3   4   37    Male  Cleveland      non-anginal     130.0  250.0  False          normal   187.0  False      3.5  downsloping  0.0             normal    0
+4   5   41  Female  Cleveland  atypical angina     130.0  204.0  False  lv hypertrophy   172.0  False      1.4    upsloping  0.0             normal    0
+
+
+2. DATA PREPROCESSING
+----------------------------------------
+Missing values per column:
+trestbps     59
+chol         30
+fbs          90
+restecg       2
+thalch       55
+exang        55
+oldpeak      62
+slope       309
+ca          611
+thal        486
+dtype: int64
+
+Dataset Statistics:
+               id         age    trestbps        chol      thalch     oldpeak          ca         num
+count  920.000000  920.000000  861.000000  890.000000  865.000000  858.000000  309.000000  920.000000
+mean   460.500000   53.510870  132.132404  199.130337  137.545665    0.878788    0.676375    0.995652
+std    265.725422    9.424685   19.066070  110.780810   25.926276    1.091226    0.935653    1.142693
+min      1.000000   28.000000    0.000000    0.000000   60.000000   -2.600000    0.000000    0.000000
+25%    230.750000   47.000000  120.000000  175.000000  120.000000    0.000000    0.000000    0.000000
+50%    460.500000   54.000000  130.000000  223.000000  140.000000    0.500000    0.000000    1.000000
+75%    690.250000   60.000000  140.000000  268.000000  157.000000    1.500000    1.000000    2.000000
+max    920.000000   77.000000  200.000000  603.000000  202.000000    6.200000    3.000000    4.000000
+
+Target column: num
+Target Distribution:
+num
+0    411
+1    265
+2    109
+3    107
+4     28
+Name: count, dtype: int64
+
+Binary Target Distribution:
+target
+1    509
+0    411
+Name: count, dtype: int64
+Disease prevalence: 0.553
+
+Columns after dropping non-predictive features:
+['age', 'sex', 'cp', 'trestbps', 'chol', 'fbs', 'restecg', 'thalch', 'exang', 'oldpeak', 'slope', 'ca', 'thal', 'target']
+
+Categorical columns to encode: ['sex', 'cp', 'fbs', 'restecg', 'exang', 'slope', 'thal']
+  sex: 2 categories
+  cp: 4 categories
+  fbs: 2 categories
+  restecg: 3 categories
+  exang: 2 categories
+  slope: 3 categories
+  thal: 3 categories
+
+Numerical columns: ['age', 'sex', 'cp', 'trestbps', 'chol', 'fbs', 'restecg', 'thalch', 'exang', 'oldpeak', 'slope', 'ca', 'thal']
+  trestbps: filled 0 missing values with median 130.00
+  chol: filled 0 missing values with median 223.00
+  thalch: filled 0 missing values with median 140.00
+  oldpeak: filled 0 missing values with median 0.50
+  ca: filled 0 missing values with median 0.00
+
+Final missing values check:
+Series([], dtype: int64)
+
+Final dataset shape:
+Features shape: (920, 13)
+Target shape: (920,)
+Feature names: ['age', 'sex', 'cp', 'trestbps', 'chol', 'fbs', 'restecg', 'thalch', 'exang', 'oldpeak', 'slope', 'ca', 'thal']
+
+Training set shape: (736, 13)
+Test set shape: (184, 13)
+
+
+3. APPLYING FEATURE SELECTION TECHNIQUES
+==================================================
+
+3.1 RECURSIVE FEATURE ELIMINATION (RFE)
+----------------------------------------
+RFE Selected Features (8):
+  1. age (rank: 1)
+  2. sex (rank: 1)
+  3. cp (rank: 1)
+  4. chol (rank: 1)
+  5. thalch (rank: 1)
+  6. exang (rank: 1)
+  7. oldpeak (rank: 1)
+  8. ca (rank: 1)
+
+3.2 MUTUAL INFORMATION FEATURE SELECTION
+----------------------------------------
+Mutual Information Selected Features (8):
+  1. cp: 0.1173
+  2. exang: 0.1016
+  3. thalch: 0.0811
+  4. chol: 0.0734
+  5. oldpeak: 0.0669
+  6. sex: 0.0558
+  7. age: 0.0425
+  8. thal: 0.0359
+
+3.3 L1 REGULARIZATION (LASSO) FEATURE SELECTION
+----------------------------------------
+L1 Regularization Selected Features (11) with C=0.1:
+  1. age
+  2. sex
+  3. cp
+  4. chol
+  5. fbs
+  6. thalch
+  7. exang
+  8. oldpeak
+  9. slope
+  10. ca
+  11. thal
+
+
+4. MODEL TRAINING AND EVALUATION
+==================================================
+
+4.1 TRAINING WITH ALL_FEATURES
+----------------------------------------
+Number of features: 13
+Accuracy: 0.8207
+F1-Score: 0.8390
+AUC: 0.8922
+CV AUC: 0.8703 ± 0.0213
+
+Classification Report:
+              precision    recall  f1-score   support
+
+           0       0.80      0.79      0.80        82
+           1       0.83      0.84      0.84       102
+
+    accuracy                           0.82       184
+   macro avg       0.82      0.82      0.82       184
+weighted avg       0.82      0.82      0.82       184
+
+
+4.2 TRAINING WITH RFE
+----------------------------------------
+Number of features: 8
+Accuracy: 0.8098
+F1-Score: 0.8276
+AUC: 0.8908
+CV AUC: 0.8676 ± 0.0172
+
+Classification Report:
+              precision    recall  f1-score   support
+
+           0       0.78      0.79      0.79        82
+           1       0.83      0.82      0.83       102
+
+    accuracy                           0.81       184
+   macro avg       0.81      0.81      0.81       184
+weighted avg       0.81      0.81      0.81       184
+
+
+4.3 TRAINING WITH MUTUAL_INFO
+----------------------------------------
+Number of features: 8
+Accuracy: 0.8207
+F1-Score: 0.8406
+AUC: 0.8943
+CV AUC: 0.8661 ± 0.0161
+
+Classification Report:
+              precision    recall  f1-score   support
+
+           0       0.81      0.78      0.80        82
+           1       0.83      0.85      0.84       102
+
+    accuracy                           0.82       184
+   macro avg       0.82      0.82      0.82       184
+weighted avg       0.82      0.82      0.82       184
+
+
+4.4 TRAINING WITH L1_REGULARIZATION
+----------------------------------------
+Number of features: 11
+Accuracy: 0.8261
+F1-Score: 0.8462
+AUC: 0.8938
+CV AUC: 0.8720 ± 0.0220
+
+Classification Report:
+              precision    recall  f1-score   support
+
+           0       0.82      0.78      0.80        82
+           1       0.83      0.86      0.85       102
+
+    accuracy                           0.83       184
+   macro avg       0.83      0.82      0.82       184
+weighted avg       0.83      0.83      0.83       184
+
+
+
+5. RESULTS COMPARISON AND ANALYSIS
+==================================================
+
+PERFORMANCE COMPARISON TABLE:
+----------------------------------------
+                   accuracy  f1_score     auc  cv_auc_mean  cv_auc_std  n_features
+All_Features         0.8207    0.8390  0.8922       0.8703      0.0213        13.0
+RFE                  0.8098    0.8276  0.8908       0.8676      0.0172         8.0
+Mutual_Info          0.8207    0.8406  0.8943       0.8661      0.0161         8.0
+L1_Regularization    0.8261    0.8462  0.8938       0.8720      0.0220        11.0
+
+BEST PERFORMING METHODS:
+------------------------------
+Best AUC: Mutual_Info (0.8943)
+Best F1-Score: L1_Regularization (0.8462)
+Best Accuracy: L1_Regularization (0.8261)
+
+
+6. FEATURE SELECTION ANALYSIS
+========================================
+
+SELECTED FEATURES BY METHOD:
+------------------------------
+
+RFE:
+  - age
+  - sex
+  - cp
+  - chol
+  - thalch
+  - exang
+  - oldpeak
+  - ca
+
+Mutual_Info:
+  - cp
+  - exang
+  - thalch
+  - chol
+  - oldpeak
+  - sex
+  - age
+  - thal
+
+L1_Regularization:
+  - age
+  - sex
+  - cp
+  - chol
+  - fbs
+  - thalch
+  - exang
+  - oldpeak
+  - slope
+  - ca
+  - thal
+
+FEATURE IMPORTANCE ACROSS METHODS:
+-----------------------------------
+oldpeak: Selected by 3/3 methods (RFE, Mutual_Info, L1_Regularization)
+exang: Selected by 3/3 methods (RFE, Mutual_Info, L1_Regularization)
+age: Selected by 3/3 methods (RFE, Mutual_Info, L1_Regularization)
+thalch: Selected by 3/3 methods (RFE, Mutual_Info, L1_Regularization)
+sex: Selected by 3/3 methods (RFE, Mutual_Info, L1_Regularization)
+cp: Selected by 3/3 methods (RFE, Mutual_Info, L1_Regularization)
+chol: Selected by 3/3 methods (RFE, Mutual_Info, L1_Regularization)
+ca: Selected by 2/3 methods (RFE, L1_Regularization)
+thal: Selected by 2/3 methods (Mutual_Info, L1_Regularization)
+slope: Selected by 1/3 methods (L1_Regularization)
+fbs: Selected by 1/3 methods (L1_Regularization)
+
+
+7. CREATING VISUALIZATIONS
+==============================
+
+
+8. INTERPRETATION AND CONCLUSIONS
+========================================
+
+FINAL ANALYSIS:
+--------------------
+1. MOST EFFECTIVE METHOD: Mutual_Info
+   - Achieved highest AUC score: 0.8943
+   - Number of features used: 8.0
+   - Selected features: cp, exang, thalch, chol, oldpeak, sex, age, thal
+
+2. PERFORMANCE INSIGHTS:
+   - Performance difference between best and worst: 0.0035
+   - Small performance differences suggest all methods are comparable
+
+3. FEATURE SELECTION INSIGHTS:
+   - Most consistently selected feature: oldpeak (selected by 3/3 methods)
+   - Features selected by multiple methods: 9
+     oldpeak, exang, age, ca, thalch, sex, cp, chol, thal
+
+4. DATASET-SPECIFIC OBSERVATIONS:
+   - Original dataset had 13 features after preprocessing
+   - Disease prevalence in dataset: 55.3%
+   - Categorical variables were successfully encoded
+   - Missing values were handled appropriately
+
+5. RECOMMENDATIONS:
+   - Use Mutual_Info for optimal performance
+   - Achieves 38.5% dimensionality reduction with optimal performance
+   - Consider ensemble methods combining multiple feature selection approaches
+   - Focus on features consistently selected across methods for model interpretability
+   - The model shows good discriminative power with AUC > 0.7 for most methods

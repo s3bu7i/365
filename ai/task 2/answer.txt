@@ -1,0 +1,220 @@
+=== AMES HOUSING DATASET ANALYSIS ===
+Objective: Predict house prices using Ridge and Lasso regression
+Dataset: Ames Housing Dataset from Kaggle
+
+============================================================
+
+1. LOADING AND EXPLORING THE DATASET
+----------------------------------------
+
+Dataset Shape: (1000, 9)
+Target Variable: SalePrice
+Number of Features: 8
+
+First 5 rows:
+       SalePrice    GrLivArea  TotalBsmtSF  GarageArea  YearBuilt  OverallQual  OverallCond Neighborhood  MSSubClass
+0  298716.582186  2199.677718   797.446518  213.828866       1973            3            5            C          40
+1  324568.165943  1962.316841   956.644399  370.942248       2000            4            7            D          50
+2  284573.836057  1529.815185   762.274024  437.959170       1959            8            2            A          30
+3  282872.290188  1176.531611   907.611541  783.153149       2005            7            6            E          60
+4  295199.940309  1849.111657   431.915600  583.482969       1957            5            8            C          60
+
+Missing Values:
+Series([], dtype: int64)
+
+Target Variable Statistics (SalePrice):
+count      1000.000000
+mean     299334.436801
+std       64868.721120
+min       97039.267030
+25%      258424.001238
+50%      299997.845848
+75%      341765.707163
+max      505075.385614
+Name: SalePrice, dtype: float64
+
+2. DATA PREPROCESSING
+----------------------------------------
+Handling missing values...
+✓ Missing values handled
+Encoding categorical variables...
+✓ Encoded 1 categorical variables
+Feature matrix shape: (1000, 8)
+Target vector shape: (1000,)
+
+3. MULTICOLLINEARITY ANALYSIS
+----------------------------------------
+Highly correlated feature pairs (|correlation| > 0.8):
+
+Calculating Variance Inflation Factor (VIF)...
+Top 10 features with highest VIF:
+        Feature        VIF
+3     YearBuilt  48.592442
+1   TotalBsmtSF  12.529689
+2    GarageArea  11.462995
+0     GrLivArea  10.518769
+7    MSSubClass   9.523983
+4   OverallQual   4.731725
+5   OverallCond   4.496372
+6  Neighborhood   2.807869
+
+Handling multicollinearity...
+Removing 4 features with VIF > 10:
+  - YearBuilt
+  - TotalBsmtSF
+  - GarageArea
+  - GrLivArea
+Reduced feature set shape: (1000, 4)
+
+4. TRAIN-TEST SPLIT AND SCALING
+----------------------------------------
+Training set size: 800
+Test set size: 200
+✓ Features scaled using StandardScaler
+
+5. RIDGE REGRESSION MODEL
+----------------------------------------
+Best Ridge alpha: 10
+Ridge Training RMSE: $57,445.25
+Ridge Test RMSE: $58,449.63
+Ridge Training R²: 0.1844
+Ridge Test R²: 0.2910
+
+6. LASSO REGRESSION MODEL
+----------------------------------------
+Best Lasso alpha: 1000
+Lasso Training RMSE: $57,468.57
+Lasso Test RMSE: $58,592.81
+Lasso Training R²: 0.1838
+Lasso Test R²: 0.2875
+Lasso selected 3 out of 4 features      
+
+7. MODEL COMPARISON
+----------------------------------------
+Performance Comparison:
+          Metric       Ridge       Lasso
+0  Training RMSE  57445.2495  57468.5711
+1      Test RMSE  58449.6321  58592.8106
+2    Training R²      0.1844      0.1838
+3        Test R²      0.2910      0.2875
+
+Overfitting Analysis:
+Ridge overfitting (Train R² - Test R²): -0.1066
+Lasso overfitting (Train R² - Test R²): -0.1037
+
+8. COEFFICIENT ANALYSIS
+----------------------------------------
+Top 10 Most Important Features (by Ridge coefficients):
+        Feature  Ridge_Coefficient  Lasso_Coefficient
+0   OverallQual       26618.884657       26048.296389
+1   OverallCond       -2592.270155       -1647.354312
+2    MSSubClass        1639.583495         715.732956
+3  Neighborhood          12.308078           0.000000
+
+Lasso set 1 coefficients to exactly zero
+Ridge coefficients range: [-2592.2702, 26618.8847]
+Lasso coefficients range: [-1647.3543, 26048.2964]
+
+9. CREATING VISUALIZATIONS
+----------------------------------------
+
+10. CROSS-VALIDATION ANALYSIS
+----------------------------------------
+5-Fold Cross-Validation Results:
+Ridge CV RMSE: 57909.48 (±1511.66)
+Lasso CV RMSE: 57886.38 (±1457.09)
+
+11. FINAL ANALYSIS AND RECOMMENDATIONS
+============================================================
+
+MULTICOLLINEAR ANALYSIS SUMMARY:
+• Identified 0 highly correlated feature pairs
+• Found 4 features with VIF > 10
+• Applied feature reduction to handle multicollinearity
+
+MODEL PERFORMANCE COMPARISON:
+• Best performing model: Ridge
+• Ridge Test R²: 0.2910, RMSE: $58,449.63
+• Lasso Test R²: 0.2875, RMSE: $58,592.81
+
+FEATURE SELECTION:
+• Ridge uses all 4 features
+• Lasso selected 3 features (automatic feature selection)
+• Lasso set 1 coefficients to zero
+
+MODEL PERFORMANCE COMPARISON:
+• Best performing model: Ridge
+• Ridge Test R²: 0.2910, RMSE: $58,449.63
+• Lasso Test R²: 0.2875, RMSE: $58,592.81
+
+FEATURE SELECTION:
+• Ridge uses all 4 features
+• Lasso selected 3 features (automatic feature selection)
+• Lasso set 1 coefficients to zero
+
+• Best performing model: Ridge
+• Ridge Test R²: 0.2910, RMSE: $58,449.63
+• Lasso Test R²: 0.2875, RMSE: $58,592.81
+
+FEATURE SELECTION:
+• Ridge uses all 4 features
+• Lasso selected 3 features (automatic feature selection)
+• Lasso set 1 coefficients to zero
+
+• Lasso Test R²: 0.2875, RMSE: $58,592.81
+
+FEATURE SELECTION:
+• Ridge uses all 4 features
+• Lasso selected 3 features (automatic feature selection)
+• Lasso set 1 coefficients to zero
+
+
+FEATURE SELECTION:
+• Ridge uses all 4 features
+• Lasso selected 3 features (automatic feature selection)
+• Lasso set 1 coefficients to zero
+
+OVERFITTING ANALYSIS:
+• Ridge shows less overfitting
+• Ridge uses all 4 features
+• Lasso selected 3 features (automatic feature selection)
+• Lasso set 1 coefficients to zero
+
+OVERFITTING ANALYSIS:
+• Ridge shows less overfitting
+• Ridge overfitting: -0.1066
+• Lasso set 1 coefficients to zero
+
+OVERFITTING ANALYSIS:
+• Ridge shows less overfitting
+• Ridge overfitting: -0.1066
+• Lasso overfitting: -0.1037
+
+OVERFITTING ANALYSIS:
+• Ridge shows less overfitting
+• Ridge overfitting: -0.1066
+• Lasso overfitting: -0.1037
+
+• Ridge overfitting: -0.1066
+• Lasso overfitting: -0.1037
+
+RECOMMENDATION:
+• Lasso overfitting: -0.1037
+
+RECOMMENDATION:
+RECOMMENDATION:
+ RIDGE REGRESSION is recommended for this problem because:
+ RIDGE REGRESSION is recommended for this problem because:
+  • Better test performance
+  • More stable predictions
+  • Better test performance
+  • More stable predictions
+  • Better handles multicollinearity
+  • More stable predictions
+  • Better handles multicollinearity
+  • Better handles multicollinearity
+
+Final Model Statistics:
+• Training R²: 0.1844
+• Test R²: 0.2910
+• Test RMSE: $58,449.63

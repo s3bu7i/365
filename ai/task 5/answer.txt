@@ -1,0 +1,172 @@
+============================================================
+PIMA INDIANS DIABETES DATASET ANALYSIS
+============================================================
+
+1. DATASET OVERVIEW
+------------------------------
+Dataset shape: (768, 9)
+
+Column names: ['Pregnancies', 'Glucose', 'BloodPressure', 'SkinThickness', 'Insulin', 'BMI', 'DiabetesPedigreeFunction', 'Age', 'Outcome']
+
+First few rows:
+   Pregnancies  Glucose  BloodPressure  SkinThickness  Insulin   BMI  DiabetesPedigreeFunction  Age  Outcome
+0            6      148             72             35        0  33.6                     0.627   50        1
+1            1       85             66             29        0  26.6                     0.351   31        0
+2            8      183             64              0        0  23.3                     0.672   32        1
+3            1       89             66             23       94  28.1                     0.167   21        0
+4            0      137             40             35      168  43.1                     2.288   33        1
+
+Dataset info:
+<class 'pandas.core.frame.DataFrame'>
+RangeIndex: 768 entries, 0 to 767
+Data columns (total 9 columns):
+ #   Column                    Non-Null Count  Dtype
+---  ------                    --------------  -----
+ 0   Pregnancies               768 non-null    int64
+ 1   Glucose                   768 non-null    int64
+ 2   BloodPressure             768 non-null    int64
+ 3   SkinThickness             768 non-null    int64
+ 4   Insulin                   768 non-null    int64
+ 5   BMI                       768 non-null    float64
+ 6   DiabetesPedigreeFunction  768 non-null    float64
+ 7   Age                       768 non-null    int64
+ 8   Outcome                   768 non-null    int64
+dtypes: float64(2), int64(7)
+memory usage: 54.1 KB
+None
+
+Basic statistics:
+       Pregnancies     Glucose  BloodPressure  SkinThickness     Insulin         BMI  DiabetesPedigreeFunction         Age     Outcome
+count   768.000000  768.000000     768.000000     768.000000  768.000000  768.000000                768.000000  768.000000  768.000000
+mean      3.845052  120.894531      69.105469      20.536458   79.799479   31.992578                  0.471876   33.240885    0.348958
+std       3.369578   31.972618      19.355807      15.952218  115.244002    7.884160                  0.331329   11.760232    0.476951
+min       0.000000    0.000000       0.000000       0.000000    0.000000    0.000000                  0.078000   21.000000    0.000000
+25%       1.000000   99.000000      62.000000       0.000000    0.000000   27.300000                  0.243750   24.000000    0.000000
+50%       3.000000  117.000000      72.000000      23.000000   30.500000   32.000000                  0.372500   29.000000    0.000000
+75%       6.000000  140.250000      80.000000      32.000000  127.250000   36.600000                  0.626250   41.000000    1.000000
+max      17.000000  199.000000     122.000000      99.000000  846.000000   67.100000                  2.420000   81.000000    1.000000
+
+Target variable distribution:
+Outcome
+0    500
+1    268
+Name: count, dtype: int64
+Diabetes prevalence: 34.90%
+
+Missing values:
+Pregnancies                 0
+Glucose                     0
+BloodPressure               0
+SkinThickness               0
+Insulin                     0
+BMI                         0
+DiabetesPedigreeFunction    0
+Age                         0
+Outcome                     0
+dtype: int64
+
+2. DATA PREPROCESSING
+------------------------------
+Glucose: 5 zero values (0.7%)
+BloodPressure: 35 zero values (4.6%)
+SkinThickness: 227 zero values (29.6%)
+Insulin: 374 zero values (48.7%)
+BMI: 11 zero values (1.4%)
+Replaced Glucose zeros with median: 117.0
+Replaced BloodPressure zeros with median: 72.0
+Replaced BMI zeros with median: 32.3
+
+Training set: 614 samples
+Test set: 154 samples
+
+3. PART A: MODEL TRAINING
+------------------------------
+Default Model Performance:
+Decision Tree Accuracy: 0.6818
+Random Forest Accuracy: 0.7338
+
+4. PART B: HYPERPARAMETER ANALYSIS
+------------------------------
+Optimal max_depth for Decision Tree: 2
+
+Performing Grid Search for optimal hyperparameters...
+Best Decision Tree parameters: {'criterion': 'entropy', 'max_depth': 3, 'min_samples_leaf': 1, 'min_samples_split': 2}
+Best Decision Tree CV score: 0.7460
+Best Random Forest parameters: {'max_depth': 10, 'min_samples_leaf': 4, 'min_samples_split': 2, 'n_estimators': 100}
+Best Random Forest CV score: 0.7802
+
+5. PART C: FEATURE IMPORTANCE ANALYSIS
+------------------------------
+Feature Importances:
+                    Feature  Decision_Tree  Random_Forest
+1                   Glucose         0.7013         0.3610
+5                       BMI         0.2720         0.1704
+7                       Age         0.0000         0.1155
+6  DiabetesPedigreeFunction         0.0000         0.0966
+2             BloodPressure         0.0000         0.0722
+0               Pregnancies         0.0267         0.0675
+4                   Insulin         0.0000         0.0636
+3             SkinThickness         0.0000         0.0532
+
+6. PART D: MODEL COMPARISON
+------------------------------
+ACCURACY COMPARISON:
+Decision Tree - Training: 0.7638, Test: 0.6948
+Random Forest - Training: 0.9088, Test: 0.7532
+
+OVERFITTING ANALYSIS:
+Decision Tree - Overfitting: 0.0690
+Random Forest - Overfitting: 0.1555
+
+DETAILED CLASSIFICATION REPORTS:
+
+Decision Tree:
+              precision    recall  f1-score   support
+
+           0       0.70      0.92      0.80       100
+           1       0.65      0.28      0.39        54
+
+    accuracy                           0.69       154
+   macro avg       0.68      0.60      0.59       154
+weighted avg       0.68      0.69      0.65       154
+
+
+Random Forest:
+              precision    recall  f1-score   support
+
+           0       0.79      0.85      0.82       100
+           1       0.67      0.57      0.62        54
+
+    accuracy                           0.75       154
+   macro avg       0.73      0.71      0.72       154
+weighted avg       0.75      0.75      0.75       154
+
+E0000 00:00:1749813181.142225   18864 ctxmenu.cc:220] UNKNOWN: From legacy status [type.googleapis.com/drive.ds.Status='UNKNOWN_STATUS']
+=== Source Location Trace: ===
+apps/drive/fs/ipc/shell_ipc_client.cc:590
+
+COMPREHENSIVE MODEL COMPARISON:
+                  Metric Decision Tree Random Forest
+       Training Accuracy        0.7638        0.9088
+           Test Accuracy        0.6948        0.7532
+Overfitting (Train-Test)        0.0690        0.1555
+        Model Complexity           Low          High
+        Interpretability          High        Medium
+           Training Time          Fast        Slower
+
+============================================================
+KEY INSIGHTS AND CONCLUSIONS:
+============================================================
+1. ACCURACY: Random Forest (0.7532) outperforms Decision Tree (0.6948)
+2. GENERALIZATION: Random Forest shows less overfitting (0.1555 vs 0.0690)
+3. FEATURE IMPORTANCE: Top features are Glucose and BMI
+4. INTERPRETABILITY: Decision Tree is more interpretable, Random Forest is more accurate
+5. OPTIMAL DEPTH: Decision Tree performs best at depth 3
+6. DIABETES PREDICTION: Both models show reasonable performance for medical screening
+
+RECOMMENDATIONS:
+- Use Random Forest for higher accuracy in automated systems
+- Use Decision Tree when interpretability is crucial for medical decisions
+- Focus on top features (Glucose, BMI, Age) for feature engineering
+- Consider ensemble methods for production deployment
+
