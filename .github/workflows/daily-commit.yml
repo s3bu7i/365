@@ -2,7 +2,10 @@ name: Daily Commit
 
 on:
   schedule:
-    - cron: "0 5 * * *"  # Hər gün saat 05:00 UTC (sənin vaxtınla ~09:00)
+    - cron: "0 5 * * *"
+
+permissions:
+  contents: write  # <-- bu hissəni əlavə et
 
 jobs:
   commit:
@@ -13,8 +16,7 @@ jobs:
         uses: actions/checkout@v3
 
       - name: Make a dummy change
-        run: |
-          echo "$(date)" >> activity.log
+        run: echo "$(date)" >> activity.log
 
       - name: Commit changes
         run: |
