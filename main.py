@@ -1,8 +1,8 @@
 import os
 
-base_folder = "2025.10."
+base_folder = "2025.11."
 
-num_folders = 31
+num_folders = 30
 
 for i in range(num_folders):
 
