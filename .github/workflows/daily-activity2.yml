@@ -2,8 +2,11 @@ name: Daily Activity
 
 on:
   schedule:
-    # Hər gün saat 09:00-da işləyir (UTC vaxtı ilə)
-    - cron: '0 9 * * *'
+    # Gündə 4 dəfə işləyir (UTC vaxtı ilə)
+    - cron: '0 6 * * *'   # Səhər 06:00
+    - cron: '0 12 * * *'  # Gündüz 12:00
+    - cron: '0 18 * * *'  # Axşam 18:00
+    - cron: '0 23 * * *'  # Gecə 23:00
   workflow_dispatch: # Manual işləmə imkanı
 
 jobs:
