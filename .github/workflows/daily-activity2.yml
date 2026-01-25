@@ -1,0 +1,36 @@
+name: Daily Activity
+
+on:
+  schedule:
+    # Gündə 4 dəfə işləyir (UTC vaxtı ilə)
+    - cron: '0 6 * * *'   # Səhər 06:00
+    - cron: '0 12 * * *'  # Gündüz 12:00
+    - cron: '0 18 * * *'  # Axşam 18:00
+    - cron: '0 23 * * *'  # Gecə 23:00
+  workflow_dispatch: # Manual işləmə imkanı
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+        
+      - name: Configure git
+        run: |
+          git config user.name "GitHub Action"
+          git config user.email "action@github.com"
+          
+      - name: Update activity file
+        run: |
+          echo "Son yeniləmə: $(date '+%Y-%m-%d %H:%M:%S')" >> activity.log
+          echo "Gün sayı: $(wc -l < activity.log || echo 1)" >> activity.log
+          echo "---" >> activity.log
+          
+      - name: Commit and push
+        run: |
+          git add activity.log
+          git diff --quiet && git diff --staged --quiet || (git commit -m "Daily update - $(date '+%Y-%m-%d')" && git push)
+        env:
+          commitMessage: "Daily update"
