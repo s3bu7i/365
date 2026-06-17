@@ -1,6 +1,6 @@
 import os
 
-base_folder = "2026.05."
+base_folder = "2026.06."
 
 num_folders = 31
 
